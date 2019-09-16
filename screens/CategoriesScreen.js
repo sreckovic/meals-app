@@ -1,15 +1,17 @@
 import React from 'react';
-import { View, Text, StyleSheet, Button, FlatList, TouchableOpacity, Platform } from 'react-native';
+import { View, Text, StyleSheet, FlatList, TouchableOpacity } from 'react-native';
 
 import { CATEGORIES } from '../data/dummy-data';
-import Colors from '../constants/Colors';
+
+import CategoryGridTile from '../components/CategoryGridTile';
 
 const CategoriesScreen = props => {
   const renderGridItem = itemData => {
     return (
-      <TouchableOpacity
-        style={styles.gridItem}
-        onPress={() => {
+      <CategoryGridTile
+        title={itemData.item.title}
+        color={itemData.item.color}
+        onSelect={() => {
           props.navigation.navigate({
             routeName: 'CategoryMeals',
             params: {
@@ -17,11 +19,7 @@ const CategoriesScreen = props => {
             },
           });
         }}
-      >
-        <View>
-          <Text>{itemData.item.title}</Text>
-        </View>
-      </TouchableOpacity>
+      />
     );
   };
 
@@ -40,34 +38,28 @@ const CategoriesScreen = props => {
     //   />
     // </View>
 
-    <FlatList
-      data={CATEGORIES}
-      numColumns={2}
-      keyExtractor={(item, index) => item.id}
-      renderItem={renderGridItem}
-    />
+    <View style={{ padding: 10 }}>
+      <FlatList
+        data={CATEGORIES}
+        numColumns={2}
+        keyExtractor={(item, index) => item.id}
+        renderItem={renderGridItem}
+      />
+    </View>
   );
 };
 
-CategoriesScreen.navigationOptions = {
-  headerTitle: 'Meal Categories',
-  headerStyle: {
-    backgroundColor: Platform.OS === 'android' ? Colors.primaryColor : null,
-  },
-  headerTintColor: Platform.OS === 'android' ? '#fff' : Colors.primaryColor,
-};
+// CategoriesScreen.navigationOptions = {
+//   headerTitle: 'Meal Categories',
+// };
 
 const styles = StyleSheet.create({
-  screen: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  gridItem: {
-    flex: 1,
-    margin: 15,
-    height: 150,
-  },
+  // screen: {
+  //   flex: 1,
+  //   justifyContent: 'center',
+  //   alignItems: 'center',
+  //   padding: 15,
+  // },
 });
 
 export default CategoriesScreen;
