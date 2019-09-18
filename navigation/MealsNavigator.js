@@ -15,6 +15,13 @@ import MealDetailsScreen from '../screens/MealDetailScreen';
 import FavoritesScreen from '../screens/FavoritesScreen';
 import FiltersScreen from '../screens/FiltersScreen';
 
+const defaultStackNavOptions = {
+  headerStyle: {
+    backgroundColor: Platform.OS === 'android' ? Colors.primaryColor : null,
+  },
+  headerTintColor: Platform.OS === 'android' ? '#fff' : Colors.primaryColor,
+};
+
 const MealsNavigator = createStackNavigator(
   {
     Categories: {
@@ -27,12 +34,7 @@ const MealsNavigator = createStackNavigator(
     MealDetails: MealDetailsScreen,
   },
   {
-    defaultNavigationOptions: {
-      headerStyle: {
-        backgroundColor: Platform.OS === 'android' ? Colors.primaryColor : null,
-      },
-      headerTintColor: Platform.OS === 'android' ? '#fff' : Colors.primaryColor,
-    },
+    defaultNavigationOptions: defaultStackNavOptions,
   }
 );
 
@@ -48,18 +50,9 @@ const FavoritesNavigator = createStackNavigator(
     },
   },
   {
-    defaultNavigationOptions: {
-      headerStyle: {
-        backgroundColor: Platform.OS === 'android' ? Colors.primaryColor : null,
-      },
-      headerTintColor: Platform.OS === 'android' ? '#fff' : Colors.primaryColor,
-    },
+    defaultNavigationOptions: defaultStackNavOptions,
   }
 );
-
-const FiltersNavigator = createStackNavigator({
-  Filters: FiltersScreen,
-});
 
 const tabScreenConfig = {
   Meals: {
@@ -95,9 +88,41 @@ const MealsFavTabNavigator =
         },
       });
 
-const MainNavigator = createDrawerNavigator({
-  MealsFavs: MealsFavTabNavigator,
-  Filters: FiltersNavigator,
-});
+const FiltersNavigator = createStackNavigator(
+  {
+    Filters: FiltersScreen,
+  },
+  {
+    // navigationOptions: {
+    //   drawerLabel: 'Filters',
+    // },
+    defaultNavigationOptions: defaultStackNavOptions,
+  }
+);
+
+const MainNavigator = createDrawerNavigator(
+  {
+    MealsFavs: {
+      screen: MealsFavTabNavigator,
+      navigationOptions: {
+        drawerLabel: 'Meals',
+      },
+    },
+    Filters: {
+      screen: FiltersNavigator,
+      // navigationOptions: {
+      //   drawerLabel: 'Filters',
+      // },
+    },
+  },
+  {
+    contentOptions: {
+      activeTintColor: Colors.accentColor,
+      labelStyle: {
+        fontFamily: 'open-sans-bold',
+      },
+    },
+  }
+);
 
 export default createAppContainer(MainNavigator);
