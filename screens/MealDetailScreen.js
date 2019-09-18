@@ -1,8 +1,7 @@
-import React from 'react';
-import { ScrollView, View, Image, Text, Button, StyleSheet } from 'react-native';
+import React, { useEffect } from 'react';
+import { ScrollView, View, Image, Text, StyleSheet } from 'react-native';
 import { HeaderButtons, Item } from 'react-navigation-header-buttons';
-
-import { MEALS } from '../data/dummy-data';
+import { useSelector } from 'react-redux';
 
 import HeaderButton from '../components/HeaderButton';
 import DefaultText from '../components/DefaultText';
@@ -17,7 +16,12 @@ const ListItem = props => {
 
 const MealDetailScreen = props => {
   const mealId = props.navigation.getParam('mealId');
-  const selectedMeal = MEALS.find(meal => meal.id === mealId);
+  const availableMeals = useSelector(state => state.meals.meals);
+  const selectedMeal = availableMeals.find(meal => meal.id === mealId);
+
+  useEffect(() => {
+    props.navigation.setParams({ mealTitle: selectedMeal.title });
+  }, [selectedMeal]);
 
   return (
     <ScrollView>
@@ -37,26 +41,15 @@ const MealDetailScreen = props => {
       {selectedMeal.steps.map((step, index) => (
         <ListItem key={index}>{step}</ListItem>
       ))}
-
-      {/* <View style={styles.screen}>
-        <Text>{selectedMeal.title}</Text>
-        <Button
-          title="Go Back to Categories"
-          onPress={() => {
-            props.navigation.popToTop();
-          }}
-        />
-      </View> */}
     </ScrollView>
   );
 };
 
 MealDetailScreen.navigationOptions = navigationData => {
-  const mealId = navigationData.navigation.getParam('mealId');
-  const selectedMeal = MEALS.find(meal => meal.id === mealId);
+  const mealTitle = navigationData.navigation.getParam('mealTitle');
 
   return {
-    headerTitle: selectedMeal.title,
+    headerTitle: mealTitle,
     headerRight: (
       <HeaderButtons HeaderButtonComponent={HeaderButton}>
         <Item
@@ -72,11 +65,6 @@ MealDetailScreen.navigationOptions = navigationData => {
 };
 
 const styles = StyleSheet.create({
-  // screen: {
-  //   flex: 1,
-  //   justifyContent: 'center',
-  //   alignItems: 'center',
-  // },
   image: {
     width: '100%',
     height: 200,
